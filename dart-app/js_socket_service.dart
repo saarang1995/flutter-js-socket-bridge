@@ -3,29 +3,29 @@ import 'package:interactive_webview/interactive_webview.dart';
 class JSSocketService {
   static InteractiveWebView jsWebview;
   final String jsAppURL = "https://"; // url of the JS application
-  JSSocketService.init() {
+
+  JSSocketService() {
     _initJSSocketFile();
   }
 
   _initJSSocketFile() {
     jsWebview = new InteractiveWebView();
     jsWebview.loadUrl(jsAppURL);
-    if (JSSocketService.jsWebview != null) {
-      _initJSWebListeners();
-    }
+    _initJSWebListeners();
   }
 
   _initJSWebListeners() {
+    // Listener to receive data from Javascript to Flutter
     JSSocketService.jsWebview.didReceiveMessage.listen((message) {
-      String eventName = message.data["eventName"];
-      String eventData = message.data["eventData"];
+      String eventName = message.data["eventName"]; // event name from server
+      String eventData = message.data["eventData"]; // event data from server
+
       switch (eventName) {
-        case "new-trade":
+        case "event_name_from_server":
           {
             if (eventData == null) {
               return;
             }
-
             // do something
             break;
           }
@@ -52,5 +52,16 @@ class JSSocketService {
           }
       }
     });
+  }
+
+  _leaveChannel(String channelName) {
+    callJavaScript("leaveChannel", channelName);
+  }
+
+  // Method to send data from Flutter to Javascript
+  void callJavaScript(String eventName, String path) {
+    String script =
+        "javascript:document.dispatchEvent(new CustomEvent('dcxAndroidListener', {detail: {eventName: '$eventName',eventData: '$path'}}));";
+    JSSocketService.jsWebview.evalJavascript(script);
   }
 }
