@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Flutter JS Socket Bridge</title>
+  </head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+
+  <body>
+    <div class="wrapper">
+      <h1>Flutter JS Socket Bridge</h1>
+    </div>
+  </body>
+
+  <script>
+    /*
+    
+    WINDOW_LISTENER_EVENT_NAME -> name of the listener using which we will send events from Flutter to this application. 
+    It should be same for both the applications.
+
+    SOCKET_SERVER_ENDPOINT -> url of the server to which you want to connect.
+    */
+
+    const SOCKET_SERVER_ENDPOINT = 'wss://...' // update it to your url.
+    const WINDOW_LISTENER_EVENT_NAME = 'flutterListener'
+    const socket = io(SOCKET_SERVER_ENDPOINT, {
+      transports: ['websocket']
+    })
+
+    let channel, eventName
+
+    function initEverything() {
+      document.addEventListener(
+        WINDOW_LISTENER_EVENT_NAME,
+        function(event) {
+          const details = event.detail
+          if (!details) {
+            console.error('Details not found for the custom event.')
+            return
+          }
+          const eventName = details.eventName
+          const eventData = details.eventData
+          performEventAction(eventName, eventData)
+        },
+        false
+      )
+    }
+
+    initEverything()
+
+    window.onload = function() {
+      connectAndConfigureSocket()
+    }
+
+    function performEventAction(eventName, eventData) {
+      switch (eventName) {
+        case 'joinChannel': {
+          //event Name from Flutter app
+          joinChannel(eventData)
+          break
+        }
+
+        default:
+          alert('Invalid event action name: ' + eventName)
+          break
+      }
+    }
+
+    function leaveChannel(channelName) {
+      socket.emit('leave', {
+        channelName
+      })
+    }
+
+    function joinChannel(channelName) {
+      socket.emit('join', { channelName }) // this code pattern is dependent on how you are receiving events on your server.
+    }
+
+    function dispatchEvent(eventNameAndData) {
+      const nativeCommunicator =
+        typeof webkit !== 'undefined' ? webkit.messageHandlers.native : window.native
+      nativeCommunicator.postMessage(eventNameAndData)
+    }
+
+    function connectAndConfigureSocket() {
+      // Sample code for forwarding the event from Socket server to the dispatcher
+      socket.on('event_name_from_server', response =>
+        dispatcher('event_name_from_server', response.data)
+      )
+
+      // socket life cycle events -> start
+      socket.on('disconnect', reason => dispatcher('disconnect', reason))
+      socket.on('connect', () => dispatcher('connect', ''))
+      socket.on('reconnect_attempt', () => dispatcher('reconnect_attempt', ''))
+      socket.on('reconnect', () => dispatcher('reconnect', ''))
+      // socket life cycle events -> end
+      
+    }
+
+    function dispatcher(eventName, eventData) {
+      dispatchEvent(
+        JSON.stringify({
+          eventName,
+          eventData
+        })
+      )
+    }
+  </script>
+</html>

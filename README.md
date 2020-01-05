@@ -1,4 +1,4 @@
-## Welcome to 
+## Welcome to Flutter JS Socket Bridge
 
 You can use the [editor on GitHub](https://github.com/saarang1995/flutter-js-socket-bridge/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
 
