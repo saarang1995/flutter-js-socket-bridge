@@ -1,37 +1,31 @@
 ## Welcome to Flutter JS Socket Bridge
 
-You can use the [editor on GitHub](https://github.com/saarang1995/flutter-js-socket-bridge/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+### Problem statement
+There are many web socket plugins available for flutter which connect to the socket server built using socket.io. Most of them work for Android, however, there is a lot of inconsistency when connecting to the socket on iOS.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+I have used 'adhara_socket_io, flutter_socket_io, socket_io_client' etc. All of them are great, but as we know flutter is in its development phase, all these plugins are being updated by their developers quite often, which leads to many problems like connection drop for Android and in many cases for iOS no connection at all.
 
-### Markdown
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+### Solution statement
+I finally figured out a way to resolve this using Javascript until the Flutter team provides a reliable plugin for both the platform.
 
-```markdown
-Syntax highlighted code block
+The solution is very simple, completely reliable and elegant. 
 
-# Header 1
-## Header 2
-### Header 3
+I have used a web view that has no UI screen to communicate with sockets in Javascript program. This has moved Web socket code from the Flutter to Javascript Middleware application which is highly performant and consistent in connection.
 
-- Bulleted
-- List
+### Creating a Javascript Middleware Application
 
-1. Numbered
-2. List
+Clone the template js application from this repository.
+Open 'js-app/index.html' file and add the necessary connection information of your socket server (Requirements are mentioned in the comments of the file).
+Now host this application on your server or deploy on Netlify. Refer below official document for deploying on Netlify:  https://www.netlify.com/blog/2016/09/29/a-step-by-step-guide-deploying-on-netlify/
 
-**Bold** and _Italic_ and `Code` text
 
-[Link](url) and ![Image](src)
-```
+![websocket-flutter](https://saarangtiwari.com/assets/blogs/how-i-used-javascript-to-bridge-and-connect-to-websockets-in-flutter/images/websocket-flutter.png)
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
 
-### Jekyll Themes
+### Creating a Flutter Application to receive socket data
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/saarang1995/flutter-js-socket-bridge/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+Let’s create a new flutter project and add interactive_webview package in pubspec.yaml.
+Create a new socket service file 'js_socket_service.dart'.
+Add boiler plate code from 'dart-app/js_socket_service.dart' from the repository in your 'js_socket_service.dart' file (Requirements are mentioned in comments of the file).
+Run the application and use it just like your usual socket application.
