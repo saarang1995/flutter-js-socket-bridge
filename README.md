@@ -17,7 +17,8 @@ I have used a web view that has no UI screen to communicate with sockets in Java
 
 Clone the template js application from this repository.
 Open **js-app/index.html** file and add the necessary connection information of your socket server (Requirements are mentioned in the comments of the file).
-Now host this application on your server or deploy on Netlify. Refer below official document for deploying on Netlify: ![Deploy-on-Netlify](https://www.netlify.com/blog/2016/09/29/a-step-by-step-guide-deploying-on-netlify/).
+Now host this application on your server or deploy on Netlify. Refer below official document for deploying on Netlify:
+[Deploy-on-Netlify](https://www.netlify.com/blog/2016/09/29/a-step-by-step-guide-deploying-on-netlify/)
 
 
 ![websocket-flutter](https://saarangtiwari.com/assets/blogs/how-i-used-javascript-to-bridge-and-connect-to-websockets-in-flutter/images/websocket-flutter.png)
